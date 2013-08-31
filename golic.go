@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/jessevdk/go-flags"
 	"os"
@@ -23,7 +24,7 @@ type Options struct {
 }
 
 type General struct {
-	Output string `short:"o" long:"output" description:"Output file" optional-value:"LICENSE" value-name:"FILE"`
+	Output string `short:"o" long:"output" description:"Output file" value-name:"FILE"`
 	List   bool   `short:"l" long:"list" description:"List supported licenses"`
 }
 
@@ -69,16 +70,27 @@ func main() {
 
 	tmpl := template.Must(template.ParseFiles(licPath))
 
-	output := os.Stdout
-
-	// TODO: write to file
 	// TODO: list all supported licenses
 
-	err = tmpl.Execute(output, opts)
+	var output bytes.Buffer
+
+	err = tmpl.Execute(&output, opts)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(0)
 	}
 
+	if gen.Output != "" {
+		f, err := os.Create(gen.Output)
+		if err != nil {
+			panic(err)
+		}
+		defer f.Close()
+
+		output.WriteTo(f)
+		fmt.Printf("License file %q successfully created!\n", gen.Output)
+	} else {
+		output.WriteTo(os.Stdout)
+	}
 	os.Exit(0)
 }
