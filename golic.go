@@ -18,7 +18,7 @@ var supported = map[string]string{
 
 type Options struct {
 	Year      int    `short:"y" long:"year" description:"License year" value-name:"YEAR"`
-	Copyright string `short:"c" long:"copyright" description:"Copyright name" required:"true" value-name:"NAME"`
+	Copyright string `short:"c" long:"copyright" description:"Copyright name" value-name:"NAME"`
 	URL       string `short:"u" long:"url" description:"URL" value-name:"URL"`
 	Email     string `short:"e" long:"email" description:"E-Mail" value-name:"EMAIL"`
 }
@@ -45,7 +45,17 @@ func main() {
 
 	// Show help message if user supply invalid options
 	if err != nil {
+		fmt.Println(err)
 		parser.WriteHelp(os.Stderr)
+		os.Exit(0)
+	}
+
+	// List supported licenses
+	if gen.List == true {
+		fmt.Println("Supported licenses:")
+		for key, _ := range supported {
+			fmt.Printf("- %s\n", key)
+		}
 		os.Exit(0)
 	}
 
@@ -69,8 +79,6 @@ func main() {
 	licPath := filepath.Join(basePath, fmt.Sprintf("%s.txt", licFile))
 
 	tmpl := template.Must(template.ParseFiles(licPath))
-
-	// TODO: list all supported licenses
 
 	var output bytes.Buffer
 
