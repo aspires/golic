@@ -45,7 +45,6 @@ func main() {
 
 	// Show help message if user supply invalid options
 	if err != nil {
-		fmt.Println(err)
 		parser.WriteHelp(os.Stderr)
 		os.Exit(0)
 	}
@@ -60,45 +59,50 @@ func main() {
 	}
 
 	// Ensure only one argument which supplied
-	if len(args) != 1 {
+	if len(args) > 1 {
 		fmt.Printf("Error: Invalid arguments supplied: %s\n", args)
 		os.Exit(0)
 	}
 
-	licFile, ok := supported[args[0]]
-	if ok == false {
-		fmt.Printf("Error: License %q is not supported\n", args[0])
-		os.Exit(0)
-	}
-
-	// Set default year
-	if opts.Year == 0 {
-		opts.Year = time.Now().Year()
-	}
-
-	licPath := filepath.Join(basePath, fmt.Sprintf("%s.txt", licFile))
-
-	tmpl := template.Must(template.ParseFiles(licPath))
-
-	var output bytes.Buffer
-
-	err = tmpl.Execute(&output, opts)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(0)
-	}
-
-	if gen.Output != "" {
-		f, err := os.Create(gen.Output)
-		if err != nil {
-			panic(err)
+	if len(args) == 1 {
+		licFile, ok := supported[args[0]]
+		if ok == false {
+			fmt.Printf("Error: License %q is not supported\n", args[0])
+			os.Exit(0)
 		}
-		defer f.Close()
 
-		output.WriteTo(f)
-		fmt.Printf("License file %q successfully created!\n", gen.Output)
-	} else {
-		output.WriteTo(os.Stdout)
+		// Set default year
+		if opts.Year == 0 {
+			opts.Year = time.Now().Year()
+		}
+
+		licPath := filepath.Join(basePath, fmt.Sprintf("%s.txt", licFile))
+
+		tmpl := template.Must(template.ParseFiles(licPath))
+
+		var output bytes.Buffer
+
+		err = tmpl.Execute(&output, opts)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(0)
+		}
+
+		if gen.Output != "" {
+			f, err := os.Create(gen.Output)
+			if err != nil {
+				panic(err)
+			}
+			defer f.Close()
+
+			output.WriteTo(f)
+			fmt.Printf("License file %q successfully created!\n", gen.Output)
+		} else {
+			output.WriteTo(os.Stdout)
+		}
+		os.Exit(0)
 	}
+
+	parser.WriteHelp(os.Stderr)
 	os.Exit(0)
 }
