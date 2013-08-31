@@ -13,8 +13,9 @@ import (
 const basePath = "templates"
 
 var supported = map[string]string{
-	"MIT":    "mit",
-	"Apache": "apache-2.0",
+	"Apache-2.0": "apache-2.0",
+	"MIT":        "mit",
+	"WTFPL":      "wtfpl",
 }
 
 type Options struct {
