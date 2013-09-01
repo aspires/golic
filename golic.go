@@ -1,47 +1,44 @@
-package main
+package golic
 
 import (
 	"bytes"
 	"fmt"
 	"github.com/jessevdk/go-flags"
 	"os"
-	"path/filepath"
+	"strings"
 	"text/template"
 	"time"
 )
 
-const basePath = "templates"
-
-var supported = map[string]string{
-	"Apache-2.0": "apache-2.0",
-	"MIT":        "mit",
-	"WTFPL":      "wtfpl",
-}
-
-type Options struct {
+type options struct {
 	Year      int    `short:"y" long:"year" description:"License year" value-name:"YEAR"`
 	Copyright string `short:"c" long:"copyright" description:"Copyright name" value-name:"NAME"`
 	URL       string `short:"u" long:"url" description:"URL" value-name:"URL"`
 	Email     string `short:"e" long:"email" description:"E-Mail" value-name:"EMAIL"`
 }
 
-type General struct {
+type general struct {
 	Output string `short:"o" long:"output" description:"Output file" value-name:"FILE"`
 	List   bool   `short:"l" long:"list" description:"List supported licenses"`
 }
 
-func main() {
-	parser := flags.NewParser(nil, flags.HelpFlag)
+func listLicenses() {
+	for key, _ := range licenses {
+		fmt.Printf("- %s\n", key)
+	}
+}
 
+func Command() {
+	parser := flags.NewParser(nil, flags.HelpFlag)
 	parser.Usage = "[OPTIONS] LICENSE"
 
 	// License options
-	opts := &Options{}
-	parser.AddGroup("License Options", opts)
+	opts := &options{}
+	parser.AddGroup("License options", opts)
 
-	// General options
-	gen := &General{}
-	parser.AddGroup("General Options", gen)
+	// general options
+	gen := &general{}
+	parser.AddGroup("general options", gen)
 
 	args, err := parser.Parse()
 
@@ -54,9 +51,7 @@ func main() {
 	// List supported licenses
 	if gen.List == true {
 		fmt.Println("Supported licenses:")
-		for key, _ := range supported {
-			fmt.Printf("- %s\n", key)
-		}
+		listLicenses()
 		os.Exit(0)
 	}
 
@@ -67,7 +62,7 @@ func main() {
 	}
 
 	if len(args) == 1 {
-		licFile, ok := supported[args[0]]
+		licTmpl, ok := licenses[args[0]]
 		if ok == false {
 			fmt.Printf("Error: License %q is not supported\n", args[0])
 			os.Exit(0)
@@ -78,9 +73,7 @@ func main() {
 			opts.Year = time.Now().Year()
 		}
 
-		licPath := filepath.Join(basePath, fmt.Sprintf("%s.txt", licFile))
-
-		tmpl := template.Must(template.ParseFiles(licPath))
+		tmpl := template.Must(template.New("License").Parse(strings.TrimPrefix(licTmpl, "\n")))
 
 		var output bytes.Buffer
 
