@@ -2,6 +2,12 @@
 
 An open source license generator for your projects.
 
+## Installation
+
+```bash
+$ go get github.com/subosito/golic
+```
+
 ## Usage
 
 ```
