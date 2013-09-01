@@ -28,3 +28,10 @@ General Options:
   -o, --output=FILE       Output file
   -l, --list              List supported licenses
 ```
+
+The golic's [LICENSE](./LICENSE) file is created using command like:
+
+```bash
+$ golic -c "Alif Rachmawadi" -e "subosito@gmail.com" -o LICENSE MIT
+```
+
