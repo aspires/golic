@@ -8,7 +8,6 @@ import (
 	"github.com/subosito/golic/templates"
 	"os"
 	"path"
-	"strings"
 	"text/template"
 	"time"
 )
@@ -76,7 +75,7 @@ func main() {
 			options.Year = time.Now().Year()
 		}
 
-		tmpl := template.Must(template.New("License").Parse(strings.TrimPrefix(lic.Template, "\n")))
+		tmpl := template.Must(templates.Template(lic.Template))
 
 		var output bytes.Buffer
 

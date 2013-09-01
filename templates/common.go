@@ -1,5 +1,12 @@
 package templates
 
+import (
+	"strings"
+	"text/template"
+)
+
+const CopyrightTmpl = `{{define "COPYRIGHT"}}{{.Copyright}}{{if .Email}} <{{.Email}}>{{end}}{{if .URL}}, {{.URL}}{{end}}{{end}}`
+
 type License struct {
 	Name     string
 	URL      string
@@ -24,4 +31,19 @@ func Load(name string) (*License, bool) {
 	}
 
 	return nil, false
+}
+
+func Template(licTmpl string) (*template.Template, error) {
+	tmpl := template.New("License")
+	tmpl, err := tmpl.Parse(CopyrightTmpl)
+	if err != nil {
+		return nil, err
+	}
+
+	tmpl, err = tmpl.Parse(strings.TrimPrefix(licTmpl, "\n"))
+	if err != nil {
+		return nil, err
+	}
+
+	return tmpl, nil
 }

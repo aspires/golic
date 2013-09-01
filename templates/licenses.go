@@ -8,7 +8,7 @@ var Licenses = []License{
 		Template: `
 The MIT License (MIT)
 
-Copyright (c) {{.Year}} {{.Copyright}}{{if .URL}}, {{.URL}}{{end}}{{if .Email}} <{{.Email}}>{{end}}
+Copyright (c) {{.Year}} {{template "COPYRIGHT" .}}
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ THE SOFTWARE.
 		Name: "Apache-2.0",
 		URL:  "http://opensource.org/licenses/Apache-2.0",
 		Template: `
-Copyright {{.Year}} {{.Copyright}}{{if .URL}}, {{.URL}}{{end}}{{if .Email}} <{{.Email}}>{{end}}
+Copyright {{.Year}} {{template "COPYRIGHT" .}}
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ limitations under the License.
            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
                    Version 2, December 2004
 
-Copyright (C) {{.Year}} {{.Copyright}}{{if .URL}}, {{.URL}}{{end}}{{if .Email}} <{{.Email}}>{{end}}
+Copyright (C) {{.Year}} {{template "COPYRIGHT" .}}
 
 Everyone is permitted to copy and distribute verbatim or modified
 copies of this license document, and changing it is allowed as long
