@@ -7,34 +7,39 @@ import (
 	"github.com/jessevdk/go-flags"
 	"github.com/subosito/golic/templates"
 	"os"
+	"path"
 	"strings"
 	"text/template"
 	"time"
 )
 
-type options struct {
-	Year      int    `short:"y" long:"year" description:"License year" value-name:"YEAR"`
-	Copyright string `short:"c" long:"copyright" description:"Copyright name" value-name:"NAME"`
-	URL       string `short:"u" long:"url" description:"URL" value-name:"URL"`
-	Email     string `short:"e" long:"email" description:"E-Mail" value-name:"EMAIL"`
-}
-
-type general struct {
-	Output string `short:"o" long:"output" description:"Output file" value-name:"FILE"`
-	List   bool   `short:"l" long:"list" description:"List supported licenses"`
-}
-
 func main() {
-	parser := flags.NewParser(nil, flags.HelpFlag)
+	parser := flags.NewNamedParser(path.Base(os.Args[0]), flags.None)
 	parser.Usage = "[OPTIONS] LICENSE"
 
+	// Help options
+	var help struct {
+		ShowHelp bool `short:"h" long:"help" description:"Show this help message"`
+	}
+	parser.AddGroup("Help Options", &help)
+
 	// License options
-	opts := &options{}
-	parser.AddGroup("License options", opts)
+	var options struct {
+		Year      int    `short:"y" long:"year" description:"License year" value-name:"YEAR"`
+		Copyright string `short:"c" long:"copyright" description:"Copyright name" value-name:"NAME"`
+		URL       string `short:"u" long:"url" description:"URL" value-name:"URL"`
+		Email     string `short:"e" long:"email" description:"E-Mail" value-name:"EMAIL"`
+	}
+
+	parser.AddGroup("License Options", &options)
 
 	// general options
-	gen := &general{}
-	parser.AddGroup("general options", gen)
+	var general struct {
+		Output string `short:"o" long:"output" description:"Output file" value-name:"FILE"`
+		List   bool   `short:"l" long:"list" description:"List supported licenses"`
+	}
+
+	parser.AddGroup("General Options", &general)
 
 	args, err := parser.Parse()
 
@@ -45,7 +50,7 @@ func main() {
 	}
 
 	// List supported licenses
-	if gen.List == true {
+	if general.List == true {
 		fmt.Println("Supported licenses:")
 		for _, val := range templates.List() {
 			fmt.Printf("- %s\n", val)
@@ -67,29 +72,29 @@ func main() {
 		}
 
 		// Set default year
-		if opts.Year == 0 {
-			opts.Year = time.Now().Year()
+		if options.Year == 0 {
+			options.Year = time.Now().Year()
 		}
 
 		tmpl := template.Must(template.New("License").Parse(strings.TrimPrefix(lic.Template, "\n")))
 
 		var output bytes.Buffer
 
-		err = tmpl.Execute(&output, opts)
+		err = tmpl.Execute(&output, options)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(0)
 		}
 
-		if gen.Output != "" {
-			f, err := os.Create(gen.Output)
+		if general.Output != "" {
+			f, err := os.Create(general.Output)
 			if err != nil {
 				panic(err)
 			}
 			defer f.Close()
 
 			output.WriteTo(f)
-			fmt.Printf("License file %q successfully created!\n", gen.Output)
+			fmt.Printf("License file %q successfully created!\n", general.Output)
 		} else {
 			output.WriteTo(os.Stdout)
 		}
