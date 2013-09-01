@@ -1,9 +1,10 @@
-package golic
+package main
 
 import (
 	"bytes"
 	"fmt"
 	"github.com/jessevdk/go-flags"
+	"github.com/subosito/golic/templates"
 	"os"
 	"strings"
 	"text/template"
@@ -22,13 +23,7 @@ type general struct {
 	List   bool   `short:"l" long:"list" description:"List supported licenses"`
 }
 
-func listLicenses() {
-	for key, _ := range licenses {
-		fmt.Printf("- %s\n", key)
-	}
-}
-
-func Command() {
+func main() {
 	parser := flags.NewParser(nil, flags.HelpFlag)
 	parser.Usage = "[OPTIONS] LICENSE"
 
@@ -51,7 +46,9 @@ func Command() {
 	// List supported licenses
 	if gen.List == true {
 		fmt.Println("Supported licenses:")
-		listLicenses()
+		for _, val := range templates.List() {
+			fmt.Printf("- %s\n", val)
+		}
 		os.Exit(0)
 	}
 
@@ -62,7 +59,7 @@ func Command() {
 	}
 
 	if len(args) == 1 {
-		licTmpl, ok := licenses[args[0]]
+		lic, ok := templates.Load(args[0])
 		if ok == false {
 			fmt.Printf("Error: License %q is not supported\n", args[0])
 			os.Exit(0)
@@ -73,7 +70,7 @@ func Command() {
 			opts.Year = time.Now().Year()
 		}
 
-		tmpl := template.Must(template.New("License").Parse(strings.TrimPrefix(licTmpl, "\n")))
+		tmpl := template.Must(template.New("License").Parse(strings.TrimPrefix(lic.Template, "\n")))
 
 		var output bytes.Buffer
 

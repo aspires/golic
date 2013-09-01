@@ -1,8 +1,11 @@
-package golic
+package templates
 
-var licenses = map[string]string{
-	// http://opensource.org/licenses/MIT
-	"MIT": `
+var Licenses = []License{
+
+	License{
+		Name: "MIT",
+		URL:  "http://opensource.org/licenses/MIT",
+		Template: `
 The MIT License (MIT)
 
 Copyright (c) {{.Year}} {{.Copyright}}{{if .URL}}, {{.URL}}{{end}}{{if .Email}} <{{.Email}}>{{end}}
@@ -24,27 +27,31 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-`,
+`},
 
-	// http://opensource.org/licenses/Apache-2.0
-	"Apache-2.0": `
+	License{
+		Name: "Apache-2.0",
+		URL:  "http://opensource.org/licenses/Apache-2.0",
+		Template: `
 Copyright {{.Year}} {{.Copyright}}{{if .URL}}, {{.URL}}{{end}}{{if .Email}} <{{.Email}}>{{end}}
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-`,
+`},
 
-	// http://www.wtfpl.net/about/
-	"WTFPL": `
+	License{
+		Name: "WTFPL",
+		URL:  "http://www.wtfpl.net/about/",
+		Template: `
            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
                    Version 2, December 2004
 
@@ -58,5 +65,6 @@ as the name is changed.
   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 
 0. You just DO WHAT THE FUCK YOU WANT TO.
-`,
+`},
+
 }
