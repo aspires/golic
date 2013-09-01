@@ -10,7 +10,7 @@ Usage:
   golic [OPTIONS] LICENSE
 
 Help Options:
-  -h, --help=             Show this help message
+  -h, --help              Show this help message
 
 License Options:
   -y, --year=YEAR         License year
