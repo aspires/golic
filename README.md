@@ -35,3 +35,11 @@ The golic's [LICENSE](./LICENSE) file is created using command like:
 $ golic -c "Alif Rachmawadi" -e "subosito@gmail.com" -o LICENSE MIT
 ```
 
+## Todo
+
+- Submit to http://mit-license.org/ when license type is MIT
+- Support multiple authors and organization (via `-a`, `--authors`)
+- Store configuration on `$HOME/.golicrc`, no need write same info each time generate a license
+- Append to existing file, eg: `README.md`
+- Any other idea? :)
+
