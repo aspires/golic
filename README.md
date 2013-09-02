@@ -39,7 +39,8 @@ $ golic -c "Alif Rachmawadi" -e "subosito@gmail.com" -o LICENSE MIT
 
 - Submit to http://mit-license.org/ when license type is MIT
 - Support multiple authors and organization (via `-a`, `--authors`)
-- Store configuration on `$HOME/.golicrc`, no need write same info each time generate a license
+- Store configuration on `$HOME/.golicrc`, no need to write same info when generate a license
 - Append to existing file, eg: `README.md`
+- Build downloadable cross platforms binary
 - Any other idea? :)
 
